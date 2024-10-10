@@ -38,7 +38,7 @@ dependencies {
     //implementation 'com.xweather:mapsglmaps:v1.0.0' //non - jitpack?
     //implementation 'com.github.vaisala-xweather:mapsgl-android-sdk:v1.0.0'
     //implementation files('libs/mapsglmaps-release.aar') // from lib directory //TESTING local AAR
-    implementation 'com.github.jasonsuto:test240815:part31'
+    implementation 'com.github.jasonsuto:test240815:33'
     implementation 'androidx.navigation:navigation-compose:2.8.2'
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
