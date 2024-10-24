@@ -4,7 +4,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.jasonsuto</groupId>
     <artifactId>test240815</artifactId>
-    <version>40r</version>
     <packaging>pom</packaging>
     <description>MapsGL SDK</description>
 </project>
