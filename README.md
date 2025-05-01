@@ -1,5 +1,5 @@
 
-Xweather MapsGL SDK Demo App
+Xweather MapsGL SDK Demo App v1.1.0-beta.2b
 ================
 
 ![Screenshot](/images/screenshot.png)
