@@ -7,4 +7,12 @@
     <version>120ba</version>
     <packaging>pom</packaging>
     <description>MapsGL SDK</description>
+    <dependencies>
+        <dependency>
+            <groupId>no.ecc.vectortile</groupId>
+            <artifactId>java-vector-tile</artifactId>
+            <version>1.4.1</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
 </project>
