@@ -1,11 +1,38 @@
+
+#install:
+# (Old)
+#  - FILE="-Dfile=mapsglmaps-release.aar"
+#  - mvn install:install-file $FILE -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=120bg -Dpackaging=aar -DgeneratePom=true
+
+
+# jitpack.yml
 jdk:
   - openjdk17
 before_install:
+  # These sdkman commands might be redundant if JitPack's 'jdk: - openjdk17'
+  # already provides a compatible JDK and Maven.
+  # Consider if you strictly need to manage Java and Maven versions this way via sdkman on JitPack.
+  # JitPack usually has recent JDKs and Maven available.
   - sdk install java 17.0.3-tem
   - sdk use java 17.0.3-tem
-  - sdk install maven
+  - sdk install maven # Installs the latest stable Maven via sdkman
   - mvn -v
   - ./scripts/prepareJitpackEnvironment.sh
 install:
-  - FILE="-Dfile=mapsglmaps-release.aar"
-  - mvn install:install-file $FILE -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=120bg -Dpackaging=aar -DgeneratePom=true
+  # Ensure the AAR file (mapsglmaps-release.aar) is available in the current directory (build root)
+  # Your ./scripts/prepareJitpackEnvironment.sh or a previous build step should produce this AAR.
+  # If it's produced inside a module (e.g., mapsglmaps/build/outputs/aar/mapsglmaps-release.aar),
+  # you'll need to either copy it to the root or adjust the -Dfile path.
+  # For this example, I'll assume mapsglmaps-release.aar is at the root after prepareJitpackEnvironment.sh
+
+  # The POM file is assumed to be named 'pom.xml' and located in the root directory.
+  - |
+    mvn install:install-file \
+      -Dfile=mapsglmaps-release.aar \
+      -DgroupId=com.github.vaisala-xweather \
+      -DartifactId=mapsgl-android-sdk \
+      -Dversion=${VERSION_NAME} \
+      -Dpackaging=aar \
+      -DpomFile=pom.xml \
+      -DgeneratePom=false
+  
