@@ -3,7 +3,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.github.jasonsuto</groupId>
 <artifactId>test240815</artifactId>
-<version>v120bp</version>
+<version>v120bq</version>
 <packaging>pom</packaging>
-<description>POM was created from install:install-file</description>
+<description>Testing pom bq</description>
 </project>
