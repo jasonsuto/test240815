@@ -12,7 +12,7 @@
             <groupId>no.ecc.vectortile</groupId>
             <artifactId>java-vector-tile</artifactId>
             <version>1.4.1</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>androidx.appcompat</groupId>
