@@ -31,10 +31,10 @@ install:
       -Dfile=mapsglmaps-release.aar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=v120bi \
+      -Dversion=v120bj \
       -Dpackaging=aar \
-      -DgeneratePom=true
-      #-DpomFile=pom.xml \
-      #-DgeneratePom=false
+      #-DgeneratePom=true
+      -DpomFile=pom.xml \
+      -DgeneratePom=false
       
   
