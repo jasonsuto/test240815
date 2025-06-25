@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">    
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.jasonsuto</groupId>
-    <artifactId>test240815</artifactId>
-    <version>v120bm</version>
-    <packaging>pom</packaging>
-    <description>MapsGL SDK</description>
-    <dependencies>
-        <dependency>
-            <groupId>no.ecc.vectortile</groupId>
-            <artifactId>java-vector-tile</artifactId>
-            <version>1.4.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>androidx.appcompat</groupId>
-          <artifactId>appcompat</artifactId>
-          <version>1.7.0</version>
-          <scope>runtime</scope>
-        </dependency>
-    </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<groupId>com.github.jasonsuto</groupId>
+<artifactId>test240815</artifactId>
+<version>v120bn</version>
+<packaging>aar</packaging>
+<description>POM was created from install:install-file</description>
 </project>
