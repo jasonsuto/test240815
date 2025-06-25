@@ -3,7 +3,21 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.github.jasonsuto</groupId>
 <artifactId>test240815</artifactId>
-<version>v120bq</version>
+<version>v120br</version>
 <packaging>pom</packaging>
 <description>Testing pom bq</description>
+<dependencies>
+        <dependency>
+            <groupId>no.ecc.vectortile</groupId>
+            <artifactId>java-vector-tile</artifactId>
+            <version>1.4.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>androidx.appcompat</groupId>
+          <artifactId>appcompat</artifactId>
+          <version>1.7.0</version>
+          <scope>runtime</scope>
+        </dependency>
+</dependencies>
 </project>
