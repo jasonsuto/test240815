@@ -33,6 +33,8 @@ install:
       -DartifactId=mapsgl-android-sdk \
       -Dversion=v120bi \
       -Dpackaging=aar \
-      -DpomFile=pom.xml \
-      -DgeneratePom=false
+      -DgeneratePom=true
+      #-DpomFile=pom.xml \
+      #-DgeneratePom=false
+      
   
