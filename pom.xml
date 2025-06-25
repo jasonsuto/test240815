@@ -5,7 +5,7 @@
     <groupId>com.github.jasonsuto</groupId>
     <artifactId>test240815</artifactId>
     <version>v120bi</version>
-    <packaging>pom</packaging>
+    <packaging>aar</packaging>
     <description>MapsGL SDK</description>
     <dependencies>
         <dependency>
