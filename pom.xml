@@ -4,6 +4,6 @@
 <groupId>com.github.jasonsuto</groupId>
 <artifactId>test240815</artifactId>
 <version>v120bn</version>
-<packaging>aar</packaging>
+<packaging>pom</packaging>
 <description>POM was created from install:install-file</description>
 </project>
