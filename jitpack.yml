@@ -17,7 +17,7 @@ before_install:
   - sdk use java 17.0.3-tem
   - sdk install maven # Installs the latest stable Maven via sdkman
   - mvn -v
-  - ./scripts/prepareJitpackEnvironment.sh
+  #- ./scripts/prepareJitpackEnvironment.sh
 install:
   # Ensure the AAR file (mapsglmaps-release.aar) is available in the current directory (build root)
   # Your ./scripts/prepareJitpackEnvironment.sh or a previous build step should produce this AAR.
@@ -31,7 +31,7 @@ install:
       -Dfile=mapsglmaps-release.aar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=v120bw \
+      -Dversion=v120bx \
       -Dpackaging=aar \
       -DgeneratePom=false \
       -DpomFile=pom-default.xml
