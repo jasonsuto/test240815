@@ -1,29 +1,9 @@
-
-#install:
-# (Old)
-#  - FILE="-Dfile=mapsglmaps-release.aar"
-#  - mvn install:install-file $FILE -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=120bg -Dpackaging=aar -DgeneratePom=true
-
-
 # jitpack.yml
+    jdk:
+      - openjdk17 # Or your required JDK version
 
-# Specify the JDK version (though it might be less critical if not building with Gradle on JitPack)
-jdk:
-  - openjdk17
-
-# The 'install' command will now use Maven to install your pre-built AAR and custom POM.
-# JitPack's environment has Maven available.
-install:
-  # Ensure Maven can handle 'aar' packaging.
-  # This might require specific Maven extensions to be available in JitPack's default environment
-  # if the vanilla Maven it provides doesn't have Android support.
-  # However, often for install:install-file, it might work if the POM itself is valid.
-  #
-  # The command below assumes:
-  # 1. Your AAR file is named 'mapsglmaps-release.aar' in the root.
-  # 2. Your custom POM file is named 'custom-pom.xml' in the root.
-  # 3. The groupId, artifactId, and version in your custom-pom.xml will be used.
-  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DpomFile=pom-default.xml -Dpackaging=aar -DgeneratePom=false
-
-# You might not need any 'before_install' or other Gradle commands if you're
-# providing pre-built artifacts.
+    install:
+      # Replace :mapsglmaps with the actual name of your library module if different
+      # This command tells Gradle to build and "publish" to a local Maven structure
+      # JitPack then picks up the artifacts from there.
+      - ./gradlew :mapsglmaps:publishToMavenLocal --stacktrace
