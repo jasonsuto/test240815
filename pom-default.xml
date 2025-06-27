@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jasonsuto</groupId>
   <artifactId>mapsglmaps</artifactId>
-  <version>v120bw</version>
+  <version>v120bx</version>
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
