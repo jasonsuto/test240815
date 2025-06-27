@@ -34,4 +34,4 @@ install:
       -Dversion=v120bw \
       -Dpackaging=aar \
       -DgeneratePom=false \
-      -DpomFile=pom.xml
+      -DpomFile=pom-default.xml
