@@ -29,8 +29,10 @@ install:
   - |
     mvn install:install-file \
       -Dfile=mapsglmaps-release.aar \
-      -DgroupId=com.github.vaisala-xweather \
-      -DartifactId=mapsgl-android-sdk \
+      #-DgroupId=com.github.vaisala-xweather \
+      #-DartifactId=mapsgl-android-sdk \
+      -DgroupId=com.github.jasonsuto \
+      -DartifactId=mapsglmaps \
       -Dversion=v120bx \
       -Dpackaging=aar \
       -DgeneratePom=false \
