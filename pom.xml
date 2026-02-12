@@ -3,7 +3,7 @@
 
     <groupId>com.github.vaisala-xweather</groupId>
     <artifactId>mapsgl-android-sdk</artifactId>
-    <version>140o</version>
+    <version>140p</version>
 
     <!-- MUST be pom -->
     <packaging>pom</packaging>
