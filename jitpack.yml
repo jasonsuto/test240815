@@ -2,5 +2,17 @@ jdk:
   - openjdk17
 
 install:
-  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DpomFile=pom.xml -Dpackaging=aar
-  - mvn install:install-file -Dfile=javadoc.jar -DpomFile=pom.xml -Dclassifier=javadoc
+  # 1. Install the AAR
+  - mvn install:install-file -Dfile=mapsglmaps-release.aar \
+      -DgroupId=com.github.vaisala-xweather \
+      -DartifactId=mapsgl-android-sdk \
+      -Dversion=140p \
+      -Dpackaging=aar
+
+  # 2. Install the Javadoc JAR
+  - mvn install:install-file -Dfile=javadoc.jar \
+      -DgroupId=com.github.vaisala-xweather \
+      -DartifactId=mapsgl-android-sdk \
+      -Dversion=140p \
+      -Dpackaging=jar \
+      -Dclassifier=javadoc
