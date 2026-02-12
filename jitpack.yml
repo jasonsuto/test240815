@@ -2,5 +2,8 @@ jdk:
   - openjdk17
 
 install:
-  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DpomFile=pom.xml -Dpackaging=aar
-  - mvn install:install-file -Dfile=javadoc.jar -DpomFile=pom.xml -Dclassifier=javadoc
+  - mvn install:install-file \
+      -Dfile=mapsglmaps-release.aar \
+      -DpomFile=pom.xml \
+      -Dpackaging=aar \
+      -Djavadoc=javadoc.jar
