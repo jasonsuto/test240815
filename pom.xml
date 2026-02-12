@@ -8,7 +8,7 @@
 
     <groupId>com.github.vaisala-xweather</groupId>
     <artifactId>mapsgl-android-sdk</artifactId>
-    <version>v1.4.0</version>
+    <version>140d</version>
     <packaging>pom</packaging> <!-- Must be pom to satisfy Maven -->
 
     <name>MapsGL SDK</name>
