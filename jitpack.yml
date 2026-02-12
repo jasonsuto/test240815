@@ -9,10 +9,10 @@ before_install:
 
 install:
   # Install the AAR manually
-  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140e -Dpackaging=aar
+  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140f -Dpackaging=aar
 
   # Install Javadoc
-  - mvn install:install-file -Dfile=javadoc.jar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140e -Dpackaging=jar -Dclassifier=javadoc
+  - mvn install:install-file -Dfile=javadoc.jar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140f -Dpackaging=jar -Dclassifier=javadoc
 
   # Install Sources
-  - mvn install:install-file -Dfile=mapsglmaps-sources.jar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140e -Dpackaging=jar -Dclassifier=sources
+  - mvn install:install-file -Dfile=mapsglmaps-sources.jar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=140f -Dpackaging=jar -Dclassifier=sources
