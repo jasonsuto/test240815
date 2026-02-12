@@ -13,7 +13,7 @@ install:
       -Dfile=mapsglmaps-release.aar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=v1.4.0 \
+      -Dversion=140d \
       -Dpackaging=aar
 
   # Install Javadoc
@@ -21,7 +21,7 @@ install:
       -Dfile=javadoc.jar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=v1.4.0 \
+      -Dversion=140d \
       -Dpackaging=jar \
       -Dclassifier=javadoc
 
@@ -30,6 +30,6 @@ install:
       -Dfile=mapsglmaps-sources.jar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=v1.4.0 \
+      -Dversion=140d \
       -Dpackaging=jar \
       -Dclassifier=sources
