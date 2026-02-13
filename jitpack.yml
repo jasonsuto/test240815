@@ -6,13 +6,13 @@ install:
   - mvn install:install-file -Dfile=mapsglmaps-release.aar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=140r \
+      -Dversion=140s \
       -Dpackaging=aar
 
   # 2. Install the Javadoc JAR
   - mvn install:install-file -Dfile=javadoc.jar \
       -DgroupId=com.github.vaisala-xweather \
       -DartifactId=mapsgl-android-sdk \
-      -Dversion=140r \
+      -Dversion=140s \
       -Dpackaging=jar \
       -Dclassifier=javadoc
