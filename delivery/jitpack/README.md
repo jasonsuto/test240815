@@ -34,12 +34,43 @@ From repo root, after a release build:
 
 ## Release checklist
 
-1. **`groupId`** in the properties file uses the **multi-module** form `com.github.<User>.<Repo>` (e.g. `com.github.jasonsuto.test240815` for [jasonsuto/test240815](https://github.com/jasonsuto/test240815/)). The install script **also** publishes the [default JitPack GAV](https://docs.jitpack.io/building/) `com.github.<User>:<Repo>:version` so JitPack’s artifact scanner finds the build.
+1. **`groupId`** in the properties file uses the **multi-module** form `com.github.<User>.<Repo>` (e.g. `com.github.jasonsuto.test240815` for [jasonsuto/test240815](https://github.com/jasonsuto/test240815/)). The JitPack Gradle publish step **derives** the [classic JitPack GAV](https://docs.jitpack.io/building/) `com.github.<User>:<Repo>` and publishes the **real AAR + `-sources.jar` (+ optional javadoc)** there directly (not a POM-only aggregator). That way `implementation 'com.github.jasonsuto:test240815:Tag'` is a **direct** library dependency and Android Studio can attach sources for **KDoc / hovers**.
 2. **`artifactId`** is the Gradle module name (`mapsglmaps`) — your committed files stay named `mapsglmaps.aar` / `mapsglmaps-sources.jar`.
-3. **Consumers** should use the usual JitPack line (repo name = artifact):  
-   `implementation 'com.github.jasonsuto:test240815:Tag'`  
-   Optional multi-module style (still installed):  
-   `implementation 'com.github.jasonsuto.test240815:mapsglmaps:Tag'`
+3. **Consumers:** use **one** `implementation` line — **`implementation 'com.github.jasonsuto:test240815:Tag'`** (same pattern as [JitPack docs](https://docs.jitpack.io/building/)). Do **not** also add `com.github.jasonsuto.test240815:mapsglmaps` in the same project, or Gradle can put the same library on the classpath twice (**duplicate class** errors). The Gradle publish job for JitPack only publishes the classic coordinate; **`install-to-m2.sh`** still installs **both** GAVs under `~/.m2` for local testing only.
+   After upgrading the dependency, sync Gradle; if hovers stay empty, try **Invalidate Caches / Restart** once. If the **AAR is R8-shrunk** (short obfuscated names) but the **sources JAR is normal Kotlin**, the IDE often cannot tie KDoc to bytecode — prefer a **non-minified AAR** (or `consumerProguardFiles` only) for the artifact you publish to JitPack.
+
+### IDE docs / KDoc hovers (JitPack rewrites Gradle metadata)
+
+**What goes wrong:** Gradle can publish a correct **`mapsglmaps-*.module`** (sources URL ends in **`-sources.jar`**). On **jitpack.io**, the **same URL** can still return **rewritten** JSON: `component` becomes **`com.github.jasonsuto` / `test240815`** and the sources file becomes **`mapsglmaps-*.jar`** instead of **`-sources.jar`**. The IDE then never treats the documentation artifact as sources.
+
+**What we do in this repo:** the JitPack Gradle build **does not publish any `*.module` file** (only **POM + `.aar` + `-sources.jar`**), and the POM does **not** include Gradle’s `published-with-gradle-metadata` marker, so clients behave like plain Maven.
+
+**What app authors should do:** in the **consumer** project, declare JitPack so Gradle does **not** prefer Gradle metadata for that host (belt-and-suspenders if JitPack ever injects a synthetic `.module` again):
+
+```kotlin
+// settings.gradle.kts — inside dependencyResolutionManagement { repositories { ... } }
+maven {
+    url = uri("https://jitpack.io")
+    metadataSources {
+        mavenPom()
+        artifact()
+    }
+}
+```
+
+```groovy
+// settings.gradle — inside dependencyResolutionManagement { repositories { ... } }
+maven {
+    url 'https://jitpack.io'
+    metadataSources {
+        mavenPom()
+        artifact()
+    }
+}
+```
+
+Then **Sync Gradle** (and bump to a **new** library tag after the publisher change above). Use a **single** `implementation` line: **`com.github.jasonsuto:test240815:Tag`**.
+
 4. **`version=`** in the properties file is used for **local** `install-to-m2.sh` runs. **On JitPack**, `JITPACK=true` causes the script to **ignore** that value and use **`git describe`** so the Maven version matches the **tag or commit** JitPack is building (otherwise artifacts land under the wrong folder and JitPack cannot find them).
 5. Replace the binary files under `delivery/jitpack/` with the new build outputs (exact filenames above).
 6. Commit, tag, push — JitPack runs **`jitpack-upload`** (`publishToMavenLocal`), not the shell script.
