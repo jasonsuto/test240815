@@ -6,7 +6,7 @@ JitPack runs `delivery/jitpack/install-to-m2.sh`, which **`mvn install:install-f
 
 | File | Required | Notes |
 |------|------------|--------|
-| `maven-coordinates.properties` | yes | `groupId`, `artifactId`, `version` (must match the Git **tag** JitPack builds, if consumers use tag as version). |
+| `maven-coordinates.properties` | yes | `groupId`, `artifactId`; `version` is for **local** installs only (JitPack uses **git** for version). |
 | `{artifactId}.aar` | yes | Example: `mapsglmaps.aar` — copy/rename from Gradle output (see below). |
 | `{artifactId}-sources.jar` | yes | Example: `mapsglmaps-sources.jar` — KDoc/sources for IDE hovers. |
 | `{artifactId}-javadoc.jar` | no | If present, it is installed with classifier `javadoc`. |
@@ -30,9 +30,10 @@ From repo root, after a release build:
 
 ## Release checklist
 
-1. **`groupId`** in `maven-coordinates.properties` must be **`com.github.<GitHubUser>.<GitHubRepoName>`** (three dot-separated segments after `com.github`). Example: repo `github.com/jasonsuto/250924-mapsgl-android-sdk` → `com.github.jasonsuto.250924-mapsgl-android-sdk`. If this is wrong, JitPack reports **“No build artifacts found”** even when `mvn install` succeeds.
-2. **`artifactId`** is your library module name (e.g. `mapsglmaps`). Consumers depend with:  
-   `implementation 'com.github.USER.REPO:mapsglmaps:Tag'`
+1. **`groupId`** must match the GitHub repo JitPack builds. For [jasonsuto/test240815](https://github.com/jasonsuto/test240815/) use **`com.github.jasonsuto.test240815`**. If this is wrong, JitPack reports **“No build artifacts found”** even when `mvn install` succeeds.
+2. **`artifactId`** is the Gradle module name (`mapsglmaps`). Consumers depend with:  
+   `implementation 'com.github.jasonsuto.test240815:mapsglmaps:Tag'`  
+   (see [JitPack multi-module](https://docs.jitpack.io/building/).)
 3. **`version=`** in the properties file is used for **local** `install-to-m2.sh` runs. **On JitPack**, `JITPACK=true` causes the script to **ignore** that value and use **`git describe`** so the Maven version matches the **tag or commit** JitPack is building (otherwise artifacts land under the wrong folder and JitPack cannot find them).
 4. Replace the binary files under `delivery/jitpack/` with the new build outputs (exact filenames above).
 5. Commit, tag, push — JitPack runs only the install script + Maven.
@@ -55,7 +56,5 @@ Or re-save the file in the editor as **LF** / disable CRLF for `*.sh`.
 
 ```bash
 bash delivery/jitpack/install-to-m2.sh
-ls ~/.m2/repository/$(echo com.github.jasonsuto | tr . /)/mapsglmaps/
+ls ~/.m2/repository/com/github/jasonsuto/test240815/mapsglmaps/
 ```
-
-(Adjust the path to match your `groupId`.)
