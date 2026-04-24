@@ -164,12 +164,29 @@ def jpRepo = dot > 0 ? rest.substring(dot + 1) : ''
 
 publishing {
     publications {
+        // Default JitPack coordinate (com.github.USER:REPO) must NOT publish the same AAR again as
+        // com.github.USER.REPO:mapsglmaps — consumers who add both get duplicate classes. Publish a
+        // packaging=pom aggregator that depends on the real library AAR at the module coordinate.
         if (jpUser && jpRepo) {
             create('jitpackRepo', MavenPublication) {
-                from components.mapsglmapsJitpackLib
                 groupId = "com.github.${jpUser}"
                 artifactId = jpRepo
                 version = pubVersion
+                pom {
+                    packaging = 'pom'
+                    name = jpRepo
+                    description = "Depends on ${moduleGroup}:${moduleArtifact} (single AAR; avoids duplicate classes if you use the default JitPack line)."
+                }
+                pom.withXml {
+                    def root = asNode()
+                    def deps = root.appendNode('dependencies')
+                    def dep = deps.appendNode('dependency')
+                    dep.appendNode('groupId', moduleGroup)
+                    dep.appendNode('artifactId', moduleArtifact)
+                    dep.appendNode('version', pubVersion)
+                    dep.appendNode('scope', 'compile')
+                    dep.appendNode('type', 'aar')
+                }
             }
         }
         create('jitpackModule', MavenPublication) {
