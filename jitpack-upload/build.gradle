@@ -5,9 +5,9 @@
  * Uses an adhoc SoftwareComponent + separate runtime/sources consumable configurations so the
  * correct files are attached to the publication.
  *
- * Disable module metadata only for the pom-only `jitpackRepo` publication. If *all* metadata
- * generation is off, JitPack can synthesize a broken `test240815-*.module` (sources listed as
- * `mapsglmaps-*.jar` instead of `*-sources.jar`), which breaks IDE documentation.
+ * Gradle `.module` publication is disabled for both publications: JitPack rewrites served
+ * `.module` content (wrong `component` + sources as `*.jar`), so publishing our own file makes
+ * resolution worse. Rely on POM + `*.aar` + `*-sources.jar` (Maven layout).
  *
  * https://docs.gradle.org/current/userguide/publishing_customization.html#sec:software-components
  */
@@ -199,5 +199,12 @@ publishing {
     }
 }
 
-tasks.matching { it.name == 'generateMetadataFileForJitpackRepoPublication' }.configureEach { it.enabled = false }
+// JitPack.io rewrites Gradle `.module` files we publish (wrong component id + `*.jar` instead of
+// `*-sources.jar`), which breaks IDE documentation. Do not publish `.module`; consumers resolve
+// from POM + classic Maven artifacts (`*.aar`, `*-sources.jar`).
+tasks.matching {
+    it.name == 'generateMetadataFileForJitpackRepoPublication' ||
+            it.name == 'generateMetadataFileForJitpackModulePublication'
+}.configureEach { it.enabled = false }
+
 
