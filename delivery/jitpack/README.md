@@ -30,13 +30,15 @@ From repo root, after a release build:
 
 ## Release checklist
 
-1. **`groupId`** must match the GitHub repo JitPack builds. For [jasonsuto/test240815](https://github.com/jasonsuto/test240815/) use **`com.github.jasonsuto.test240815`**. If this is wrong, JitPack reports **“No build artifacts found”** even when `mvn install` succeeds.
-2. **`artifactId`** is the Gradle module name (`mapsglmaps`). Consumers depend with:  
-   `implementation 'com.github.jasonsuto.test240815:mapsglmaps:Tag'`  
-   (see [JitPack multi-module](https://docs.jitpack.io/building/).)
-3. **`version=`** in the properties file is used for **local** `install-to-m2.sh` runs. **On JitPack**, `JITPACK=true` causes the script to **ignore** that value and use **`git describe`** so the Maven version matches the **tag or commit** JitPack is building (otherwise artifacts land under the wrong folder and JitPack cannot find them).
-4. Replace the binary files under `delivery/jitpack/` with the new build outputs (exact filenames above).
-5. Commit, tag, push — JitPack runs only the install script + Maven.
+1. **`groupId`** in the properties file uses the **multi-module** form `com.github.<User>.<Repo>` (e.g. `com.github.jasonsuto.test240815` for [jasonsuto/test240815](https://github.com/jasonsuto/test240815/)). The install script **also** publishes the [default JitPack GAV](https://docs.jitpack.io/building/) `com.github.<User>:<Repo>:version` so JitPack’s artifact scanner finds the build.
+2. **`artifactId`** is the Gradle module name (`mapsglmaps`) — your committed files stay named `mapsglmaps.aar` / `mapsglmaps-sources.jar`.
+3. **Consumers** should use the usual JitPack line (repo name = artifact):  
+   `implementation 'com.github.jasonsuto:test240815:Tag'`  
+   Optional multi-module style (still installed):  
+   `implementation 'com.github.jasonsuto.test240815:mapsglmaps:Tag'`
+4. **`version=`** in the properties file is used for **local** `install-to-m2.sh` runs. **On JitPack**, `JITPACK=true` causes the script to **ignore** that value and use **`git describe`** so the Maven version matches the **tag or commit** JitPack is building (otherwise artifacts land under the wrong folder and JitPack cannot find them).
+5. Replace the binary files under `delivery/jitpack/` with the new build outputs (exact filenames above).
+6. Commit, tag, push — JitPack runs only the install script + Maven.
 
 ## Large binaries
 

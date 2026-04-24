@@ -71,35 +71,54 @@ if [[ ! -f "$SRC" ]]; then
   exit 1
 fi
 
-mvn -q install:install-file \
-  -Dfile="$AAR" \
-  -DgroupId="$GROUP_ID" \
-  -DartifactId="$ARTIFACT_ID" \
-  -Dversion="$VERSION" \
-  -Dpackaging=aar \
-  -DgeneratePom=true
+install_one() {
+  local file="$1"
+  local gid="$2"
+  local aid="$3"
+  local ver="$4"
+  local pkg="$5"
+  local genpom="${6:-false}"
+  local classifier="${7:-}"
 
-mvn -q install:install-file \
-  -Dfile="$SRC" \
-  -DgroupId="$GROUP_ID" \
-  -DartifactId="$ARTIFACT_ID" \
-  -Dversion="$VERSION" \
-  -Dpackaging=jar \
-  -Dclassifier=sources
+  local args=(
+    -q install:install-file
+    "-Dfile=$file"
+    "-DgroupId=$gid"
+    "-DartifactId=$aid"
+    "-Dversion=$ver"
+    "-Dpackaging=$pkg"
+  )
+  if [[ "$genpom" == "true" ]]; then
+    args+=(-DgeneratePom=true)
+  fi
+  if [[ -n "$classifier" ]]; then
+    args+=("-Dclassifier=$classifier")
+  fi
+  mvn "${args[@]}"
+}
 
+# 1) Multi-module / explicit coordinates (e.g. com.github.USER.REPO:mapsglmaps:tag)
+install_one "$AAR" "$GROUP_ID" "$ARTIFACT_ID" "$VERSION" aar true ""
+install_one "$SRC" "$GROUP_ID" "$ARTIFACT_ID" "$VERSION" jar false "sources"
 if [[ -f "$DOC" ]]; then
-  mvn -q install:install-file \
-    -Dfile="$DOC" \
-    -DgroupId="$GROUP_ID" \
-    -DartifactId="$ARTIFACT_ID" \
-    -Dversion="$VERSION" \
-    -Dpackaging=jar \
-    -Dclassifier=javadoc
+  install_one "$DOC" "$GROUP_ID" "$ARTIFACT_ID" "$VERSION" jar false "javadoc"
 fi
+echo "Installed ${GROUP_ID}:${ARTIFACT_ID}:${VERSION} (aar + sources)"
 
-extra=""
-if [[ -f "$DOC" ]]; then
-  extra=" + javadoc"
+# 2) JitPack default coordinates from https://docs.jitpack.io/building/ :
+#    implementation 'com.github.User:RepoName:Version'
+#    → groupId com.github.User, artifactId RepoName (same AAR/sources files).
+if [[ "$GROUP_ID" == com.github.*.* ]]; then
+  rest="${GROUP_ID#com.github.}"
+  if [[ "$rest" == *.* ]]; then
+    jp_user="${rest%%.*}"
+    jp_repo="${rest#*.}"
+    simple_group="com.github.${jp_user}"
+    echo "Also installing JitPack default GAV ${simple_group}:${jp_repo}:${VERSION}"
+    install_one "$AAR" "$simple_group" "$jp_repo" "$VERSION" aar true ""
+    install_one "$SRC" "$simple_group" "$jp_repo" "$VERSION" jar false "sources"
+    if [[ -f "$DOC" ]]; then
+      install_one "$DOC" "$simple_group" "$jp_repo" "$VERSION" jar false "javadoc"
+    fi
+  fi
 fi
-echo "Installed ${GROUP_ID}:${ARTIFACT_ID}:${VERSION} (aar + sources${extra})"
-
