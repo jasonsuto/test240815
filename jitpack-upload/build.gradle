@@ -2,8 +2,11 @@
  * Standalone Gradle project used only by JitPack (`./gradlew -p jitpack-upload publishToMavenLocal`).
  *
  * Publishes committed AAR + sources (+ optional javadoc) from ../delivery/jitpack/ with maven-publish.
- * Publications must be backed by a SoftwareComponent so Gradle Module Metadata is generated; otherwise
- * extra artifact(src) { classifier sources } is "out of context" and IDEs do not attach sources for docs.
+ * Publications must be backed by a SoftwareComponent so Gradle Module Metadata is generated.
+ *
+ * Runtime and sources use *separate* consumable configurations: secondary variants on a single
+ * configuration inherit the parent's org.jetbrains.kotlin.platform.type, and the IDE/Gradle
+ * sources request typically does not include that attribute — so sources never attach for docs.
  *
  * https://docs.gradle.org/current/userguide/publishing_customization.html#sec:software-components
  */
@@ -83,10 +86,10 @@ tasks.withType(PublishToMavenLocal).configureEach {
     }
 }
 
-// Kotlin Android libraries expose this attribute on published runtime variants.
 def kotlinPlatformType = Attribute.of('org.jetbrains.kotlin.platform.type', String)
 
-configurations.register('mapsglmapsJitpackOutgoing') {
+// Runtime AAR only (Kotlin Android consumer attributes).
+configurations.register('mapsglmapsRuntimeElements') {
     canBeConsumed = true
     canBeResolved = false
     attributes {
@@ -98,44 +101,58 @@ configurations.register('mapsglmapsJitpackOutgoing') {
     }
     outgoing {
         artifact(aar)
-        variants.register('sourcesElements') {
-            attributes {
-                attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
-                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
-                attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
-                attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-                // Do not inherit libraryelements=aar from the parent configuration (breaks sources resolution).
-                attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
-            }
-            artifact(src) {
-                classifier = 'sources'
-                extension = 'jar'
-            }
-        }
-        if (jdoc.exists()) {
-            variants.register('javadocElements') {
-                attributes {
-                    attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
-                    attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
-                    attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.JAVADOC))
-                    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-                    attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
-                }
-                artifact(jdoc) {
-                    classifier = 'javadoc'
-                    extension = 'jar'
-                }
-            }
+    }
+}
+
+// Sources: documentation variant — do NOT set kotlin platform (IDE sources requests omit it).
+configurations.register('mapsglmapsSourcesElements') {
+    canBeConsumed = true
+    canBeResolved = false
+    attributes {
+        attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+        attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
+        attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
+        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+        attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+    }
+    outgoing {
+        artifact(src) {
+            classifier = 'sources'
+            extension = 'jar'
         }
     }
 }
 
-// PublishingExtension does not expose SoftwareComponentFactory in Gradle 8.14; obtain from project services.
 SoftwareComponentFactory softwareComponentFactory =
         ((ProjectInternal) project).services.get(SoftwareComponentFactory)
 def jitpackLib = softwareComponentFactory.adhoc('mapsglmapsJitpackLib')
-jitpackLib.addVariantsFromConfiguration(configurations.named('mapsglmapsJitpackOutgoing').get()) {
+jitpackLib.addVariantsFromConfiguration(configurations.named('mapsglmapsRuntimeElements').get()) {
     mapToMavenScope('runtime')
+}
+jitpackLib.addVariantsFromConfiguration(configurations.named('mapsglmapsSourcesElements').get()) {
+    mapToMavenScope('runtime')
+}
+if (jdoc.exists()) {
+    configurations.register('mapsglmapsJavadocElements') {
+        canBeConsumed = true
+        canBeResolved = false
+        attributes {
+            attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
+            attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.JAVADOC))
+            attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+            attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements, LibraryElements.JAR))
+        }
+        outgoing {
+            artifact(jdoc) {
+                classifier = 'javadoc'
+                extension = 'jar'
+            }
+        }
+    }
+    jitpackLib.addVariantsFromConfiguration(configurations.named('mapsglmapsJavadocElements').get()) {
+        mapToMavenScope('runtime')
+    }
 }
 components.add(jitpackLib)
 
