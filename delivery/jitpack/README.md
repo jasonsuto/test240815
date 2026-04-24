@@ -9,6 +9,7 @@ For **local** installs without Gradle, you can still run `bash delivery/jitpack/
 | File | Required | Notes |
 |------|------------|--------|
 | `jitpack-gradle-publish.sh` | yes | Used by root `jitpack.yml`; must stay **Unix LF** (see root `.gitattributes`). |
+| `jitpack-upload/gradlew` + `jitpack-upload/gradle/wrapper/*` | yes | Self-contained wrapper so JitPack works even when the GitHub repo has **no** repo-root `gradlew` (slim artifact-only repo). Sync with root `gradle/wrapper` when you upgrade Gradle. The publish script falls back to repo-root `gradlew` if present. |
 | `maven-coordinates.properties` | yes | `groupId`, `artifactId`; `version` is for **local** installs only (JitPack uses **git** for version). |
 | `{artifactId}.aar` | yes | Example: `mapsglmaps.aar` — copy/rename from Gradle output (see below). |
 | `{artifactId}-sources.jar` | yes | Example: `mapsglmaps-sources.jar` — KDoc/sources for IDE hovers. |
