@@ -1,3 +1,5 @@
+# JitPack runs install-to-m2.sh on Linux; CRLF breaks `set` (e.g. "pipefail: invalid option name").
+delivery/jitpack/*.sh text eol=lf
 javadoc.jar export-ignore
 mapsglmaps-sources.jar export-ignore
 mapsglmaps-release.aar export-ignore
