@@ -1,6 +1,14 @@
+# Manual artifacts: committed AAR + sources (+ optional javadoc) under delivery/jitpack/.
+# See delivery/jitpack/README.md for exact filenames and release checklist.
+#
+# JitPack runs this instead of Gradle publish; Maven must be available on the image.
+# https://docs.jitpack.io/building/
+
 jdk:
   - openjdk17
 
+before_install:
+  - mvn -v
+
 install:
-  - mvn install:install-file -Dfile=mapsglmaps-release.aar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=v1.5.1 -Dpackaging=aar
-  - mvn install:install-file -Dfile=javadoc.jar -DgroupId=com.github.vaisala-xweather -DartifactId=mapsgl-android-sdk -Dversion=v1.5.1 -Dpackaging=jar -Dclassifier=javadoc
+  - bash delivery/jitpack/install-to-m2.sh
