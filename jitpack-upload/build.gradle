@@ -2,11 +2,12 @@
  * Standalone Gradle project used only by JitPack (`./gradlew -p jitpack-upload publishToMavenLocal`).
  *
  * Publishes committed AAR + sources (+ optional javadoc) from ../delivery/jitpack/ with maven-publish.
- * Publications must be backed by a SoftwareComponent so Gradle Module Metadata is generated.
+ * Uses an adhoc SoftwareComponent + separate runtime/sources consumable configurations so the
+ * correct files are attached to the publication.
  *
- * Runtime and sources use *separate* consumable configurations: secondary variants on a single
- * configuration inherit the parent's org.jetbrains.kotlin.platform.type, and the IDE/Gradle
- * sources request typically does not include that attribute — so sources never attach for docs.
+ * Gradle `.module` metadata is disabled (`generateMetadataFileFor*Publication` tasks): Android
+ * Studio / IntelliJ usually attach KDoc via the classic Maven `*-sources.jar` next to the POM;
+ * a custom `.module` often prevents that path from matching for external AARs.
  *
  * https://docs.gradle.org/current/userguide/publishing_customization.html#sec:software-components
  */
@@ -197,3 +198,12 @@ publishing {
         }
     }
 }
+
+// Android Studio / IntelliJ often attach KDoc by downloading `*-sources.jar` using classic Maven
+// layout. A Gradle `.module` that describes custom variants can prevent that path from matching
+// the IDE's expectations for external Android AARs. Publish POM + artifacts only (no `.module`).
+tasks.matching { t ->
+    t.name.startsWith('generateMetadataFileFor') && t.name.endsWith('Publication')
+}.configureEach { it.enabled = false }
+
+
