@@ -5,7 +5,7 @@
  * Uses an adhoc SoftwareComponent + separate runtime/sources consumable configurations so the
  * correct files are attached to the publication.
  *
- * Gradle `.module` publication is disabled for both publications: JitPack rewrites served
+ * Gradle `.module` publication is disabled: JitPack rewrites served
  * `.module` content (wrong `component` + sources as `*.jar`), so publishing our own file makes
  * resolution worse. Rely on POM + `*.aar` + `*-sources.jar` (Maven layout).
  *
@@ -165,46 +165,23 @@ def jpRepo = dot > 0 ? rest.substring(dot + 1) : ''
 
 publishing {
     publications {
-        // Default JitPack coordinate (com.github.USER:REPO) must NOT publish the same AAR again as
-        // com.github.USER.REPO:mapsglmaps — consumers who add both get duplicate classes. Publish a
-        // packaging=pom aggregator that depends on the real library AAR at the module coordinate.
+        // Single publication at the classic JitPack GAV `com.github.USER:REPO` so consumers can use
+        // `implementation 'com.github.jasonsuto:test240815:Tag'` and still get IDE KDoc (direct AAR
+        // + sources on that coordinate — not a POM-only aggregator with a transitive AAR).
+        //
+        // Do not also depend on `com.github.USER.REPO:mapsglmaps` — that would duplicate the same AAR.
         if (jpUser && jpRepo) {
             create('jitpackRepo', MavenPublication) {
+                from components.mapsglmapsJitpackLib
                 groupId = "com.github.${jpUser}"
                 artifactId = jpRepo
                 version = pubVersion
-                pom {
-                    packaging = 'pom'
-                    name = jpRepo
-                    description = "Depends on ${moduleGroup}:${moduleArtifact} (single AAR; avoids duplicate classes if you use the default JitPack line)."
-                }
-                pom.withXml {
-                    def root = asNode()
-                    def deps = root.appendNode('dependencies')
-                    def dep = deps.appendNode('dependency')
-                    dep.appendNode('groupId', moduleGroup)
-                    dep.appendNode('artifactId', moduleArtifact)
-                    dep.appendNode('version', pubVersion)
-                    dep.appendNode('scope', 'compile')
-                    dep.appendNode('type', 'aar')
-                }
             }
-        }
-        create('jitpackModule', MavenPublication) {
-            from components.mapsglmapsJitpackLib
-            groupId = moduleGroup
-            artifactId = moduleArtifact
-            version = pubVersion
         }
     }
 }
 
-// JitPack.io rewrites Gradle `.module` files we publish (wrong component id + `*.jar` instead of
-// `*-sources.jar`), which breaks IDE documentation. Do not publish `.module`; consumers resolve
-// from POM + classic Maven artifacts (`*.aar`, `*-sources.jar`).
-tasks.matching {
-    it.name == 'generateMetadataFileForJitpackRepoPublication' ||
-            it.name == 'generateMetadataFileForJitpackModulePublication'
-}.configureEach { it.enabled = false }
+// JitPack rewrites `.module`; omit it so IDEs use POM + `*.aar` + `*-sources.jar`.
+tasks.matching { it.name == 'generateMetadataFileForJitpackRepoPublication' }.configureEach { it.enabled = false }
 
 
