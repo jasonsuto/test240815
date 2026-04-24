@@ -30,14 +30,26 @@ From repo root, after a release build:
 
 ## Release checklist
 
-1. Bump **`version=`** in `maven-coordinates.properties` to the **same string** as the Git tag you will push (e.g. `v1.6.0`).
-2. Confirm **`groupId` / `artifactId`** match the dependency line JitPack shows for your repo (multi-module is often `com.github.ORG.REPO` + artifact `mapsglmaps`).
-3. Replace the three binary files with the new build outputs (exact filenames above).
-4. Commit, tag, push — JitPack build should only run the shell script + Maven (no Gradle publish required for this path).
+1. **`groupId`** in `maven-coordinates.properties` must be **`com.github.<GitHubUser>.<GitHubRepoName>`** (three dot-separated segments after `com.github`). Example: repo `github.com/jasonsuto/250924-mapsgl-android-sdk` → `com.github.jasonsuto.250924-mapsgl-android-sdk`. If this is wrong, JitPack reports **“No build artifacts found”** even when `mvn install` succeeds.
+2. **`artifactId`** is your library module name (e.g. `mapsglmaps`). Consumers depend with:  
+   `implementation 'com.github.USER.REPO:mapsglmaps:Tag'`
+3. **`version=`** in the properties file is used for **local** `install-to-m2.sh` runs. **On JitPack**, `JITPACK=true` causes the script to **ignore** that value and use **`git describe`** so the Maven version matches the **tag or commit** JitPack is building (otherwise artifacts land under the wrong folder and JitPack cannot find them).
+4. Replace the binary files under `delivery/jitpack/` with the new build outputs (exact filenames above).
+5. Commit, tag, push — JitPack runs only the install script + Maven.
 
 ## Large binaries
 
 If policy allows, consider **Git LFS** for `.aar` / `.jar` files so the main repo stays lean.
+
+## Shell script line endings (Windows)
+
+`install-to-m2.sh` **must be committed with Unix LF** only. CRLF causes JitPack errors like `set: pipefail: invalid option name` (the `\r` corrupts the `set` line). Root **`.gitattributes`** forces `eol=lf` for `delivery/jitpack/*.sh`. After changing the script, normalize once:
+
+```bash
+git add --renormalize delivery/jitpack/install-to-m2.sh
+```
+
+Or re-save the file in the editor as **LF** / disable CRLF for `*.sh`.
 
 ## Local test (Linux/macOS or Git Bash)
 
