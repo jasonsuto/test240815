@@ -1,5 +1,6 @@
 # JitPack runs install-to-m2.sh on Linux; CRLF breaks `set` (e.g. "pipefail: invalid option name").
 delivery/jitpack/*.sh text eol=lf
-javadoc.jar export-ignore
-mapsglmaps-sources.jar export-ignore
-mapsglmaps-release.aar export-ignore
+delivery/jitpack/maven-coordinates.properties text eol=lf
+
+# Gradle wrapper must be LF on Linux or the shebang can break with "No such file or directory".
+gradlew text eol=lf
