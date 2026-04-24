@@ -1,14 +1,13 @@
 # Manual artifacts: committed AAR + sources (+ optional javadoc) under delivery/jitpack/.
 # See delivery/jitpack/README.md for exact filenames and release checklist.
 #
-# JitPack runs this instead of Gradle publish; Maven must be available on the image.
+# JitPack treats repos with a root build.gradle as Gradle projects and discovers artifacts from
+# Gradle’s publishToMavenLocal output. The standalone project jitpack-upload publishes the
+# committed binaries from delivery/jitpack/ (mvn install:install-file alone is not enough).
 # https://docs.jitpack.io/building/
 
 jdk:
   - openjdk17
 
-before_install:
-  - mvn -v
-
 install:
-  - bash delivery/jitpack/install-to-m2.sh
+  - ./gradlew -p jitpack-upload --no-daemon publishToMavenLocal
