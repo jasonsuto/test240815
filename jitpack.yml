@@ -9,5 +9,6 @@
 jdk:
   - openjdk17
 
+# Android detection can leave cwd outside repo root; script resolves ROOT via git and runs gradlew there.
 install:
-  - ./gradlew -p jitpack-upload --no-daemon publishToMavenLocal
+  - bash delivery/jitpack/jitpack-gradle-publish.sh
